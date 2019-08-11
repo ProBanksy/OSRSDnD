@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+    <div class="grid-stack">
+        <div class="grid-stack-item" style="background-color: black;"
+             data-gs-x="0" data-gs-y="0"
+             data-gs-width="1" data-gs-height="1">
+            <div class="grid-stack-item-content"></div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+$(function () {
+    $('.grid-stack').gridstack({
+        cellHeight: 80,
+        disableResize: true,
+        verticalMargin: 10
+    });
+});
+</script>
