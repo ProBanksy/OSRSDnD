@@ -1,21 +1,82 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<input id="itemSearch" />
 
-    <div class="grid-stack">
-        <div class="grid-stack-item" style="background-color: black;"
-             data-gs-x="0" data-gs-y="0"
-             data-gs-width="1" data-gs-height="1">
-            <div class="grid-stack-item-content"></div>
-        </div>
-    </div>
+<div class="grid"></div>
 
-<script type="text/javascript">
-$(function () {
-    $('.grid-stack').gridstack({
-        cellHeight: 80,
-        disableResize: true,
-        verticalMargin: 10
+<script>
+    var jsonItems = "";
+    $.get("https://raw.githubusercontent.com/osrsbox/osrsbox-db/master/docs/items-summary.json", function (data) {
+        jsonItems = data;
     });
-});
+
+    var parsedItems;
+    setTimeout(function () {
+        parsedItems = JSON.parse(jsonItems);
+
+        for (var i = 0; i < 100; i++) {
+            if (parsedItems[i] != null) {
+                var img = document.createElement("img");
+                img.id = "item" + i;
+                img.classList.add("item-content");
+                img.title = parsedItems[i].name;
+                img.setAttribute("src", "https://www.osrsbox.com/osrsbox-db/items-icons/" + i + ".png");
+
+                var itemContent = document.createElement("div");
+                itemContent.classList.add("item-content");
+
+                var item = document.createElement("div");
+                item.classList.add("item");
+
+                itemContent.appendChild(img);
+                item.appendChild(itemContent);
+                document.getElementsByClassName("grid")[0].appendChild(item);
+            }
+        };
+
+        var grid = new Muuri('.grid', { dragEnabled: true });
+
+        var itemArray = new Array();
+        for (var i = 0; i < 15000; i++) {
+            if (parsedItems[i] != null) {
+                itemArray.push(parsedItems[i].name);
+            }
+        };
+        itemArray = [...new Set(itemArray)];
+
+        $("#itemSearch").autocomplete({
+            source: itemArray,
+            open: function () {
+                var menuItems = document.getElementsByClassName("ui-menu-item-wrapper");
+                Array.from(menuItems).forEach(function (element) {
+                    //element.addEventListener("click", addItem(this.innerText), false);
+                    element.setAttribute("onclick", "addItem(this.innerText);");
+                });
+            }
+        });
+    }, 250);
+
+    function addItem(item) {
+        for (var i = 0; i < 15000; i++) {
+            if (parsedItems[i] != null && parsedItems[i].name == item) {
+                var img = document.createElement("img");
+                img.id = "item" + i;
+                img.classList.add("item-content");
+                img.title = parsedItems[i].name;
+                img.setAttribute("src", "https://www.osrsbox.com/osrsbox-db/items-icons/" + i + ".png");
+
+                var itemContent = document.createElement("div");
+                itemContent.classList.add("item-content");
+
+                var item = document.createElement("div");
+                item.classList.add("item");
+
+                itemContent.appendChild(img);
+                item.appendChild(itemContent);
+                document.getElementsByClassName("grid")[0].appendChild(item);
+                break;
+            }
+        };
+
+        document.getElementById("itemSearch").value = "";
+        grid = new Muuri('.grid', { dragEnabled: true });
+    }
 </script>
