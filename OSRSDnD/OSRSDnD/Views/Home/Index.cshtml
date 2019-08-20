@@ -1,5 +1,4 @@
-﻿<input id="itemSearch" />
-
+﻿<input id="search" />
 <div class="grid"></div>
 
 <script>
@@ -9,32 +8,30 @@
     });
 
     var parsedItems;
+    var itemArray = new Array();
     setTimeout(function () {
         parsedItems = JSON.parse(jsonItems);
 
-        for (var i = 0; i < 100; i++) {
-            if (parsedItems[i] != null) {
-                var img = document.createElement("img");
-                img.id = "item" + i;
-                img.classList.add("item-content");
-                img.title = parsedItems[i].name;
-                img.setAttribute("src", "https://www.osrsbox.com/osrsbox-db/items-icons/" + i + ".png");
+        //for (var i = 0; i < 100; i++) {
+        //    if (parsedItems[i] != null) {
+        //        var img = document.createElement("img");
+        //        img.id = "item" + i;
+        //        img.classList.add("item-content");
+        //        img.title = parsedItems[i].name;
+        //        img.setAttribute("src", "https://www.osrsbox.com/osrsbox-db/items-icons/" + i + ".png");
 
-                var itemContent = document.createElement("div");
-                itemContent.classList.add("item-content");
+        //        var itemContent = document.createElement("div");
+        //        itemContent.classList.add("item-content");
 
-                var item = document.createElement("div");
-                item.classList.add("item");
+        //        var item = document.createElement("div");
+        //        item.classList.add("item");
 
-                itemContent.appendChild(img);
-                item.appendChild(itemContent);
-                document.getElementsByClassName("grid")[0].appendChild(item);
-            }
-        };
+        //        itemContent.appendChild(img);
+        //        item.appendChild(itemContent);
+        //        document.getElementsByClassName("grid")[0].appendChild(item);
+        //    }
+        //};
 
-        var grid = new Muuri('.grid', { dragEnabled: true });
-
-        var itemArray = new Array();
         for (var i = 0; i < 15000; i++) {
             if (parsedItems[i] != null) {
                 itemArray.push(parsedItems[i].name);
@@ -42,7 +39,7 @@
         };
         itemArray = [...new Set(itemArray)];
 
-        $("#itemSearch").autocomplete({
+        $("#search").autocomplete({
             source: itemArray,
             open: function () {
                 var menuItems = document.getElementsByClassName("ui-menu-item-wrapper");
@@ -54,9 +51,10 @@
         });
     }, 250);
 
-    function addItem(item) {
+    var itemPosition;
+    function addItem(itemName) {
         for (var i = 0; i < 15000; i++) {
-            if (parsedItems[i] != null && parsedItems[i].name == item) {
+            if (parsedItems[i] != null && parsedItems[i].name == itemName) {
                 var img = document.createElement("img");
                 img.id = "item" + i;
                 img.classList.add("item-content");
@@ -72,11 +70,24 @@
                 itemContent.appendChild(img);
                 item.appendChild(itemContent);
                 document.getElementsByClassName("grid")[0].appendChild(item);
+
+                for (var j = 0; j < itemArray.length; j++) {
+                    if (itemArray[j] == itemName) {
+                        itemArray.splice(j, 1);
+                        break;
+                    }
+                };
+
+                setTimeout(function () {
+                    document.getElementById("search").value = "";
+                }, 0);
+
+                new Muuri('.grid', {
+                    dragEnabled: true
+                });
+
                 break;
             }
         };
-
-        document.getElementById("itemSearch").value = "";
-        grid = new Muuri('.grid', { dragEnabled: true });
     }
 </script>
