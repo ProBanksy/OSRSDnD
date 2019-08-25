@@ -39,22 +39,31 @@
         };
         itemArray = [...new Set(itemArray)];
 
+        itemArray.sort();
+
         $("#search").autocomplete({
             source: itemArray,
             open: function () {
                 var menuItems = document.getElementsByClassName("ui-menu-item-wrapper");
                 Array.from(menuItems).forEach(function (element) {
-                    //element.addEventListener("click", addItem(this.innerText), false);
                     element.setAttribute("onclick", "addItem(this.innerText);");
                 });
             }
         });
     }, 250);
 
-    var itemPosition;
     function addItem(itemName) {
+        var quantity = prompt("Quantity?");
+        if (quantity == "") {
+            return addItem(itemName);
+        }
+
         for (var i = 0; i < 15000; i++) {
             if (parsedItems[i] != null && parsedItems[i].name == itemName) {
+                var itemQuantity = document.createElement("div");
+                itemQuantity.classList.add("item-quantity");
+                itemQuantity.innerText = quantity;
+
                 var img = document.createElement("img");
                 img.id = "item" + i;
                 img.classList.add("item-content");
@@ -67,6 +76,7 @@
                 var item = document.createElement("div");
                 item.classList.add("item");
 
+                itemContent.appendChild(itemQuantity);
                 itemContent.appendChild(img);
                 item.appendChild(itemContent);
                 document.getElementsByClassName("grid")[0].appendChild(item);
